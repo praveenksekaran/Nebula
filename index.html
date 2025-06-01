@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cost Optimizer - Interactive Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'blue-custom': '#4F7DF3',
+                        'green-custom': '#22C55E',
+                        'orange-custom': '#F59E0B',
+                        'purple-custom': '#8B5CF6'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(100%)' },
+                            '100%': { transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>    
+    <link rel="stylesheet" href="styles.css">  
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-semibold text-gray-900">AI Cost Optimizer</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                        <span id="status-text">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Chat Interface Section -->
+        <section id="chat-section" class="animate-fade-in">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                <!-- Chat Header -->
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+                    <h2 class="text-xl font-semibold text-white">AI Cost Optimization Assistant</h2>
+                    <p class="text-blue-100 text-sm mt-1">Ask me about cost optimization, model selection, or performance metrics</p>
+                </div>
+
+                
+
+                <!-- Chat Container -->
+                <div class="flex h-96">
+                    <!-- Chat Messages -->
+                    <div class="flex-1 flex flex-col">
+                        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
+                            <div class="space-y-4">
+                                <!-- Welcome Message -->
+                                <div class="flex items-start space-x-3">                                    
+                                    <p class="text-gray-900">Hello! I'm your AI Cost Optimization Assistant. I can help you analyze and optimize your 
+                                        AI infrastructure costs.
+                                    <br>
+                                    if you are aware of your agents needs, jump to <b>start with agents</b>. if you are not sure, click on the <b>guided path</b> below.
+                                    </p>
+                                                                     
+                                 
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <div class="border-t border-gray-200 p-4 bg-white">
+                            <div class="flex space-x-3">
+                                <button 
+                                id="agents-button"
+                                class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                </svg>
+                                start with agents
+                                </button>
+                                <a href="projectanalysis.html">
+                                    <button 
+                                    id="guided-path-button"
+                                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                    </svg>
+                                    guided path
+                                    </button>
+                                </a>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>       
+    </main>
+</body>
+</html>
