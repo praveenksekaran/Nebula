@@ -23,8 +23,8 @@ class AICostOptimizerReport {
         return `
             <!-- Cost Analysis Header -->
             <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">Cost Breakdown Analysis</h2>
-                <p class="text-gray-600">Real-time cost calculations based on your parameters</p>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Cost Breakdown Report</h2>
+                <p class="text-gray-600">Real-time cost calculations based on your selections</p>
             </div>
 
             <!-- Top Metrics Cards -->

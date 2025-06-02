@@ -42,13 +42,16 @@
             optimizer.genReport();
         });
 
-        downloadReport(file_type)
-        {
+        function downloadReport(file_type)
+        {            
             if (file_type === 'pdf')
                 {
                     var element = document.getElementById('results-panel');
                     html2pdf(element);
                 }
+            else{
+                alert('sorry this operation is not yet implemented!')
+            }
         };
 
     </script>    
@@ -82,7 +85,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-xl border border-gray-200 p-6 sticky top-24 space-y-4">
-                        <button onclick="window.downloadReport('pdf')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                        <button onclick="downloadReport('pdf')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                             </svg>
