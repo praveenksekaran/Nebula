@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cost Optimizer - Interactive Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'blue-custom': '#4F7DF3',
+                        'green-custom': '#22C55E',
+                        'orange-custom': '#F59E0B',
+                        'purple-custom': '#8B5CF6'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(100%)' },
+                            '100%': { transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>    
+    <link rel="stylesheet" href="../styles/styles.css">  
+    <script src="../js/html2pdf.bundle.min.js"></script>  
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const optimizer = new AICostOptimizerReport();
+            optimizer.genReport();
+        });
+
+        downloadReport(file_type)
+        {
+            if (file_type === 'pdf')
+                {
+                    var element = document.getElementById('results-panel');
+                    html2pdf(element);
+                }
+        };
+
+    </script>    
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-semibold text-gray-900">AI Cost Optimizer</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                        <span id="status-text">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section id="report-section" class="animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 sticky top-24 space-y-4">
+                        <button onclick="window.downloadReport('pdf')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            <span>Download PDF</span>
+                        </button>
+                        <button onclick="downloadReport('excel')" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>Download Excel</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Report Panel -->
+                <div class="lg:col-span-3">
+                    <div id="results-panel" class="space-y-8">
+                        <!-- Results content will be populated by JavaScript -->
+                   
+                    </div>
+                </div>
+            </div>
+        </section>       
+    </main>    
+    <script src="../js/reportData.js"></script>
+    <script src="../js/data.js"></script>
+</body>
+</html>

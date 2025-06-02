@@ -5,20 +5,20 @@ class AICostOptimizer {
         this.chatHistory = [];
         this.currentSummary = '';
         this.configData = {};
-        this.init();
+        this.init();        
     }
 
     init() {
         this.bindEvents();
-        this.populateConfigOptions();
-        this.updateStatus('Ready');
+        //this.populateConfigOptions();
+        this.updateStatus('Ready');      
     }
 
     bindEvents() {
         // Chat events
-        document.getElementById('send-button').addEventListener('click', () => this.sendMessage());
+        document.getElementById('send-button').addEventListener('click', () => this.sendChatMessageLyzr());
         document.getElementById('chat-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.sendMessage();
+            if (e.key === 'Enter') this.sendChatMessageLyzr();
         });
 
         // Quick action events
@@ -33,9 +33,10 @@ class AICostOptimizer {
         document.getElementById('show-summary-button').addEventListener('click', () => this.showSummary());
         document.getElementById('chat-again-button').addEventListener('click', () => this.returnToChat());
         document.getElementById('proceed-button').addEventListener('click', () => this.showConfiguration());
+        document.getElementById('choose-model-button').addEventListener('click', () => this.showModelpanel());
+        // Configuration events gen-report-button
+        //document.getElementById('generate-report-button').addEventListener('click', () => this.generateReport());
 
-        // Configuration events
-        document.getElementById('generate-report-button').addEventListener('click', () => this.generateReport());
     }
 
     populateConfigOptions() {
@@ -49,8 +50,8 @@ class AICostOptimizer {
         });
 
         // Populate complexity buttons
-        const complexityContainer = document.getElementById('complexity-buttons');
-        AppData.complexityLevels.forEach((level, index) => {
+    const complexityContainer = document.getElementById('complexity-buttons');
+    AppData.complexityLevels.forEach((level, index) => {
             const button = document.createElement('button');
             button.type = 'button';
             button.className = `px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 complexity-btn ${index === 1 ? 'bg-blue-500 text-white' : ''}`;
@@ -83,30 +84,73 @@ class AICostOptimizer {
         document.getElementById('status-text').textContent = status;
     }
 
-    sendMessage() {
-        const input = document.getElementById('chat-input');
-        const message = input.value.trim();
-        
-        if (!message) return;
-
-        this.addMessageToChat('user', message);
-        input.value = '';
-        
+    //chat Function from Lyzer 
+    async sendChatMessageLyzr() { 
+        this.addMessageToChat('user', document.getElementById('chat-input').value);             
         this.updateStatus('Thinking...');
         this.showTypingIndicator();
 
+        var jsonData;
+
+        const url = 'https://agent-prod.studio.lyzr.ai/v3/inference/chat/';
+        
+        const headers = {
+          'Content-Type': 'application/json',
+          'x-api-key': 'sk-default-b8BlfVaJO2ISTOVXXW6ABKVXMO2ZS7EB'
+        };
+        
+        const body = {
+          user_id: "praveen.k.s@hotmail.com",
+          agent_id: "683ae97784eab878b4b50152",
+          session_id: "683ae97784eab878b4b50152-2n0fj4nrc22",
+          message: document.getElementById('chat-input').value
+        };
+
+        console.log('Request body:', body);
+        
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+          });        
+        
+
+          //Inserting 
+          // Option 1: For fetch API
+            if (response.text) {
+                
+                const responseText = await response.text();
+                jsonData = JSON.parse(responseText);
+                console.log(jsonData.response);
+            } 
+            else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }     
+         
+          //return data;
+        } catch (error) {
+          console.log('all catch failed');
+          console.error('Error sending chat message:', error);
+          throw error;
+        }
+        
+        const message = jsonData.response;        
+        if (!message) return;
+
+        this.addMessageToChat('ai', message);
+        document.getElementById('chat-input').value = '';
+
         // Simulate AI response delay
         setTimeout(() => {
-            this.handleAIResponse(message);
+            //this.handleAIResponse(message);
+            //document.getElementById('chat-input').value = message;
             this.hideTypingIndicator();
             this.updateStatus('Ready');
-        }, 1500);
-    }
+        }, 10);
 
-    handleQuickAction(query) {
-        document.getElementById('chat-input').value = query;
-        this.sendMessage();
-    }
+        //chat Function from Lyze
+      }
 
     addMessageToChat(sender, message) {
         const messagesContainer = document.getElementById('chat-messages');
@@ -145,7 +189,7 @@ class AICostOptimizer {
         this.chatHistory.push({ sender, message, timestamp: new Date() });
 
         // Show summary button after AI response
-        if (sender === 'ai' && this.chatHistory.length > 2) {
+        if (message.includes('#$#$#$report.md#$#$#$')) {
             document.getElementById('summary-button-container').classList.remove('hidden');
         }
     }
@@ -213,23 +257,106 @@ class AICostOptimizer {
             <p class="mb-4">${this.currentSummary}</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div class="bg-white rounded-lg p-4 border border-gray-200">
-                    <h4 class="font-medium text-gray-900 mb-2">💡 Key Insights</h4>
+                    <h4 class="font-medium text-gray-900 mb-2">💡 Overview </h4>
+                    <p>A streamlined ticketing solution powered by two AI agents:
+                        - **Agent 1: Ticket-Sorting Agent**
+                        Automatically ingests, classifies, prioritizes, and routes incoming tickets.
+                        - **Agent 2: Customer-Response Agent**
+                        Drafts and delivers context-aware replies, maintaining conversational history.
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg p-4 border border-gray-200">
+                    <h4 class="font-medium text-gray-900 mb-2">📊 All Tasks Required</h4>
                     <ul class="text-sm text-gray-600 space-y-1">
-                        <li>• Cost optimization opportunities identified</li>
-                        <li>• Model selection recommendations ready</li>
-                        <li>• Performance metrics framework prepared</li>
+                        <li>• T1. Ingest incoming tickets (email, web form, chat)</li>
+                        <li>• T2. Validate and enrich ticket data (customer lookups, metadata)</li>
+                        <li>• T3. Classify tickets by category (Billing, Technical, Feature Request, etc.)</li>
+                         <li>• T4. Prioritize tickets (severity, SLA risk, customer tier)</li>
+                          <li>• T5. Route or assign tickets to the correct team or queue</li>
+                           <li>• T6. Monitor SLA timers and trigger escalations or reminders</li>
+                            <li>• T7. Generate draft responses tailored to ticket context and tone</li>
+                             <li>• T8. Send responses via appropriate channel and update status</li>
+                              <li>• T9. Maintain conversation history for follow-up and continuity</li>
+                               <li>• T10. Produce analytics dashboards and performance reports  </li>
+                    </ul>                
+                </div>
+            </div>
+        `;
+
+        document.getElementById('summary-content1').innerHTML = `
+            <p class="mb-4">${this.currentSummary}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="bg-white rounded-lg p-4 border border-gray-200">
+                    <h4 class="font-medium text-gray-900 mb-2">💡 Tasks Automatable Without AI Agents</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• T1: Ticket ingestion via standard connectors (SMTP, REST webhooks)</li>
+                        <li>• T2: Data validation & enrichment using rule-based scripts</li>
+                        <li>• T5: Rule-based routing (e.g., “Billing → Billing Team”)</li>
+                        <li>• T6: SLA monitoring & alerting via scheduled jobs</li>
+                        <li>• T10: Basic dashboard generation from database queries</li>
                     </ul>
                 </div>
                 <div class="bg-white rounded-lg p-4 border border-gray-200">
-                    <h4 class="font-medium text-gray-900 mb-2">📊 Next Steps</h4>
+                    <h4 class="font-medium text-gray-900 mb-2">📊 Tasks Requiring AI Agents</h4>
                     <ul class="text-sm text-gray-600 space-y-1">
-                        <li>• Configure your specific parameters</li>
-                        <li>• Generate detailed cost analysis</li>
-                        <li>• Download comprehensive report</li>
+                        <li>• T3: NLP-based ticket classification</li>
+                        <li>• T4: ML-driven priority scoring and SLA-risk prediction</li>
+                        <li>• T7: Natural-language generation for personalized replies</li>
+                        <li>• T9: Context management for coherent multi-turn dialogs</li>
                     </ul>
                 </div>
             </div>
         `;
+        document.getElementById('summary-content2').innerHTML = `
+            <p class="mb-4">${this.currentSummary}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="bg-white rounded-lg p-4 border border-gray-200">                   
+                    <p>2 agents<p>
+                </div>                
+            </div>
+        `;
+
+        document.getElementById('summary-content3').innerHTML = `
+            <p class="mb-4">${this.currentSummary}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="bg-white rounded-lg p-4 border border-gray-200">
+                    <h4 class="font-medium text-gray-900 mb-2">💡 Agent 1: Ticket-Sorting Agent</h4>
+                    Capabilities:
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• NLP classification & clustering of tickets</li>
+                        <li>• Predictive prioritization (severity, SLA risk, customer importance)</li>
+                        <li>• Dynamic routing decisions and escalation triggers</li>
+                        <li>• Integrations with email servers, webhooks, chat APIs, and help-desk systems</li>                       
+                    </ul>
+                    <p> Assigned Tasks: T3, T4, T5 (dynamic), T6 (escalations)</p>
+                    Performance & Memory Needs:
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• Throughput: 200–500 tickets/hour</li>
+                        <li>• Short-term memory of recent ticket trends</li>
+                        <li>• Audit logs of decisions for compliance</li>                    
+                    </ul>
+                    
+                </div>
+                <div class="bg-white rounded-lg p-4 border border-gray-200">
+                    <h4 class="font-medium text-gray-900 mb-2">💡 Agent 2: Customer-Response Agent</h4>
+                        Capabilities:
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Contextual NLG to draft replies in brand voice</li>
+                            <li>• Sentiment analysis to adjust tone and empathy</li>
+                            <li>• Multi-turn dialog management with persistent memory</li>
+                            <li>• Integrations with email, chat widgets, and SMS gateways</li>                       
+                        </ul>
+                        <p> Assigned Tasks: T7, T8, T9</p>
+                        Performance & Memory Needs:
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Latency: <2 seconds for real-time responses</li>
+                            <li>• Long-term memory of user interactions for continuity</li>
+                            <li>• Confidence scoring with fallbacks to human review</li>                    
+                        </ul>
+                </div>
+            </div>
+        `;
+
         this.currentStep = 'summary';
     }
 
@@ -243,7 +370,20 @@ class AICostOptimizer {
         document.getElementById('summary-section').classList.add('hidden');
         document.getElementById('config-section').classList.remove('hidden');
         this.currentStep = 'configuration';
-        this.generateInitialReport();
+        //this.generateInitialReport();
+        //this.showDownloadButton();
+        this.populateAgentDropdown();
+    }
+
+    populateAgentDropdown() {
+        // Populate use case types
+        const agentSelect = document.getElementById('use-case-type');
+        projectData.agents.forEach(agent => {
+            const option = document.createElement('option');
+            option.value = agent.name;
+            option.textContent = agent.name;
+            agentSelect.appendChild(option);
+        });
     }
 
     selectComplexity(button) {
@@ -258,6 +398,126 @@ class AICostOptimizer {
         button.classList.remove('text-gray-600');
     }
 
+    async showModelpanel(){
+        const agentSelect = document.getElementById('use-case-type');
+        const selectedAgent = projectData.agents.find(agent => agent.name === agentSelect.value);       
+                  
+        this.updateStatus('Thinking...');     
+
+        var jsonData;
+
+        const url = 'https://agent-prod.studio.lyzr.ai/v3/inference/chat/';
+        
+        const headers = {
+          'Content-Type': 'application/json',
+          'x-api-key': 'sk-default-b8BlfVaJO2ISTOVXXW6ABKVXMO2ZS7EB'
+        };
+        
+        const body = {
+          user_id: "praveen.k.s@hotmail.com",
+          agent_id: "683b360f06e05ef78261af99",
+          session_id: "683b360f06e05ef78261af99-xtm08ury49d",
+          message: JSON.stringify(selectedAgent)
+        };       
+        
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+          });         
+         
+            if (response.text) {                
+                const responseText = await response.text();
+                jsonData = JSON.parse(responseText);                               
+            } 
+            else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }            
+       
+        } catch (error) {         
+          console.error('Error sending chat message:', error);
+          throw error;
+        }
+
+        this.updateStatus('Ready');         
+        this.showModelOptions(jsonData.response,selectedAgent);     
+      }
+
+    showModelOptions(modelOptions,inputOptions){ 
+        const myData = inputOptions;
+        const jsonString = modelOptions.replace(/```json\n?/, '').replace(/\n?```$/, '');
+        const data = JSON.parse(jsonString);               
+        document.getElementById('model-panel').classList.remove('hidden');
+        document.getElementById('model-panel').innerHTML = `<div class="bg-white rounded-lg shadow-lg p-6">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-4">Model Recommendations</h2> 
+                                <div class="flex justify-end mb-6">
+                                    <button type="button" id="gen-report-button" onclick="window.location.href='../pages/report.html'" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        Generate Report
+                                    </button>
+                                </div>
+                                <!-- Requirements Section -->
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Requirements</h3>
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <h4 class="font-medium text-gray-900 mb-2">💡 ${myData.name}</h4>
+                                        <div class="space-y-3">
+                                            <div>
+                                                <h5 class="text-sm font-medium text-gray-700">Capabilities:</h5>
+                                                ${myData.capabilities}
+                                            </div>
+                                            <div>
+                                                <h5 class="text-sm font-medium text-gray-700">Performance Requirements:</h5>
+                                                ${myData.performanceAndMemory}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Options Section -->
+                            <div class="space-y-6">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-medium text-gray-900 mb-4">Model Options</h4>
+                                    ${data.options.map((option, index) => `
+                                        <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                                            <div class="flex justify-between items-start mb-3">
+                                                <div>
+                                                    <h5 class="text-lg font-semibold text-gray-900">${option.model}</h5>
+                                                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full ${option.role === 'Best Fit' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">${option.role}</span>
+                                                </div>
+                                                <button class="select-model-btn px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors" data-model="${option.model}">
+                                                    Select
+                                                </button>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4 mb-3">
+                                                <div class="text-sm">
+                                                    <span class="font-medium text-gray-700">Provider:</span> ${option.provider}
+                                                </div>
+                                                <div class="text-sm">
+                                                    <span class="font-medium text-gray-700">Cost:</span> $${option.cost}/month
+                                                </div>
+                                                <div class="text-sm">
+                                                    <span class="font-medium text-gray-700">Cost per token:</span> $${option.cost_per_token}
+                                                </div>
+                                                <div class="text-sm">
+                                                    <span class="font-medium text-gray-700">Speed:</span> ${option.speed}/5
+                                                </div>
+                                            </div>
+                                            <div class="text-sm text-gray-600">
+                                                <span class="font-medium text-gray-700">Justification:</span> ${option.justification}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <!-- Options code -->
+                        </div>
+                `
+
+    }
+
     generateInitialReport() {
         const resultsPanel = document.getElementById('results-panel');
         resultsPanel.innerHTML = this.createCostAnalysisHTML();
@@ -267,6 +527,7 @@ class AICostOptimizer {
         // Collect configuration data
         this.configData = {
             useCase: document.getElementById('use-case-type').value,
+
             complexity: document.querySelector('.complexity-btn.bg-blue-500').dataset.level,
             expectedUsers: document.getElementById('expected-users').value,
             dailyRequests: document.getElementById('daily-requests').value,
@@ -524,3 +785,4 @@ class AICostOptimizer {
 document.addEventListener('DOMContentLoaded', () => {
     new AICostOptimizer();
 });
+

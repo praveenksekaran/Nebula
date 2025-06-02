@@ -43,18 +43,18 @@ const AppData = {
 
     // Sample cost analysis data
     costAnalysis: {
-        monthlyTotal: "$3,000",
+        monthlyTotal: "$1,000",
         costPerRequest: "$0.0100",
-        costEfficiency: "94.2%",
+        costEfficiency: "$5000",
         components: [
             {
-                name: "LLM Processing (GPT-4 Turbo)",
-                cost: "$2,157",
+                name: "Agent 1: o4 Mini",
+                cost: "$1,157",
                 percentage: "71.9%",
                 color: "blue"
             },
             {
-                name: "Infrastructure & Hosting", 
+                name: "Agent 2: AWS Bedrock model", 
                 cost: "$507",
                 percentage: "16.9%",
                 color: "green"
@@ -86,6 +86,78 @@ const AppData = {
         ]
     }
 };
+
+const projectData = {
+    "title": "Ticketing System Blueprint",
+    "overview": "A streamlined ticketing solution powered by two AI agents: Agent 1 ingests, classifies, prioritizes and routes incoming tickets; Agent 2 drafts and delivers context-aware replies, maintaining conversational history.",
+    "tasksRequired": [
+        { "id": "T1",  "description": "Ingest incoming tickets (email, web form, chat)" },
+        { "id": "T2",  "description": "Validate and enrich ticket data (customer lookups, metadata)" },
+        { "id": "T3",  "description": "Classify tickets by category (Billing, Technical, Feature Request, etc.)" },
+        { "id": "T4",  "description": "Prioritize tickets (severity, SLA risk, customer tier)" },
+        { "id": "T5",  "description": "Route or assign tickets to the correct team or queue" },
+        { "id": "T6",  "description": "Monitor SLA timers and trigger escalations or reminders" },
+        { "id": "T7",  "description": "Generate draft responses tailored to ticket context and tone" },
+        { "id": "T8",  "description": "Send responses via appropriate channel and update status" },
+        { "id": "T9",  "description": "Maintain conversation history for follow-up and continuity" },
+        { "id": "T10", "description": "Produce analytics dashboards and performance reports" }
+    ],
+    "tasksAutomatableWithoutAI": [
+        "T1",
+        "T2",
+        "T5",
+        "T6",
+        "T10"
+    ],
+    "tasksRequiringAIAgents": [
+        "T3",
+        "T4",
+        "T7",
+        "T9"
+    ],
+    "numberOfAIAgents": 2,
+    "agents": [
+        {
+            "name": "Agent 1: Ticket-Sorting Agent",
+            "assignedTasks": [
+                "T3",
+                "T4",
+                "T5",
+                "T6"
+            ],
+            "capabilities": [
+                "NLP classification & clustering of tickets",
+                "Predictive prioritization (severity, SLA risk, customer importance)",
+                "Dynamic routing decisions and escalation triggers",
+                "Integrations with email servers, webhooks, chat APIs, and help-desk systems"
+            ],
+            "performanceAndMemory": {
+                "throughputTicketsPerHour": "200–500",
+                "shortTermMemory": "recent ticket trends",
+                "auditLogs": "decision history for compliance"
+            }
+        },
+        {
+            "name": "Agent 2: Customer-Response Agent",
+            "assignedTasks": [
+                "T7",
+                "T8",
+                "T9"
+            ],
+            "capabilities": [
+                "Contextual NLG to draft replies in brand voice",
+                "Sentiment analysis to adjust tone and empathy",
+                "Multi-turn dialog management with persistent memory",
+                "Integrations with email, chat widgets, and SMS gateways"
+            ],
+            "performanceAndMemory": {
+                "responseLatencySeconds": "<2",
+                "longTermMemory": "user interactions for continuity",
+                "confidenceScoring": "with fallbacks to human review"
+            }
+        }
+    ]
+}; 
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
